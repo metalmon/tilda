@@ -1,0 +1,296 @@
+# Translations template for Frappe Tilda.
+# Copyright (C) 2025 Metalmon
+# This file is distributed under the same license as the Frappe Tilda project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Frappe Tilda VERSION\n"
+"Report-Msgid-Bugs-To: dev@frappecrm.ru\n"
+"POT-Creation-Date: 2025-04-09 22:31+0000\n"
+"PO-Revision-Date: 2025-04-09 22:31+0000\n"
+"Last-Translator: dev@frappecrm.ru\n"
+"Language-Team: dev@frappecrm.ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.1\n"
+
+#. Description of the 'Webhook Name' (Data) field in DocType 'Tilda Webhook
+#. Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "A descriptive name for this webhook configuration (e.g., 'Main Contact Form')."
+msgstr ""
+
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.js:59
+msgid "Clear existing mappings/defaults and auto-add required fields?"
+msgstr ""
+
+#. Label of the created_document_link (HTML) field in DocType 'Tilda Webhook
+#. Log'
+#: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
+msgid "Created Document"
+msgstr ""
+
+#. Label of the default_value (Small Text) field in DocType 'Tilda Default
+#. Value'
+#: tilda/frappe_tilda/doctype/tilda_default_value/tilda_default_value.json
+msgid "Default Value"
+msgstr ""
+
+#. Label of the default_values (Table) field in DocType 'Tilda Webhook
+#. Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Default Values"
+msgstr ""
+
+#. Label of the enable_logging (Check) field in DocType 'Tilda Webhook
+#. Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Enable Logging"
+msgstr ""
+
+#. Description of the 'Enabled' (Check) field in DocType 'Tilda Webhook
+#. Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Enable or disable this webhook endpoint."
+msgstr ""
+
+#. Label of the enabled (Check) field in DocType 'Tilda Webhook Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Enabled"
+msgstr ""
+
+#. Description of the 'Default Value' (Small Text) field in DocType 'Tilda
+#. Default Value'
+#: tilda/frappe_tilda/doctype/tilda_default_value/tilda_default_value.json
+msgid "Enter the default value as text. It will be converted to the target field's type if possible (e.g., '1' for Checkbox, '2024-12-31' for Date)."
+msgstr ""
+
+#. Option for the 'Status' (Select) field in DocType 'Tilda Webhook Log'
+#: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
+msgid "Error"
+msgstr ""
+
+#. Label of the field_mapping_section (Section Break) field in DocType 'Tilda
+#. Webhook Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Field Mapping & Defaults"
+msgstr ""
+
+#. Label of the field_mappings (Table) field in DocType 'Tilda Webhook
+#. Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Field Mappings"
+msgstr ""
+
+#. Label of the frappe_field_name (Select) field in DocType 'Tilda Default
+#. Value'
+#. Label of the frappe_field_name (Select) field in DocType 'Tilda Field
+#. Mapping'
+#: tilda/frappe_tilda/doctype/tilda_default_value/tilda_default_value.json
+#: tilda/frappe_tilda/doctype/tilda_field_mapping/tilda_field_mapping.json
+msgid "Frappe Field Name"
+msgstr ""
+
+#. Description of the 'Overwrite if value exists from Tilda' (Check) field in
+#. DocType 'Tilda Default Value'
+#: tilda/frappe_tilda/doctype/tilda_default_value/tilda_default_value.json
+msgid "If checked, this default value will replace any value mapped from the Tilda form for the same field."
+msgstr ""
+
+#. Description of the 'Enable Logging' (Check) field in DocType 'Tilda Webhook
+#. Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Log incoming requests in Tilda Webhook Log."
+msgstr ""
+
+#. Label of the logs_html (HTML) field in DocType 'Tilda Webhook Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Logs"
+msgstr ""
+
+#. Description of the 'Field Mappings' (Table) field in DocType 'Tilda Webhook
+#. Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Map incoming Tilda form field names to Frappe Doctype fields."
+msgstr ""
+
+#. Label of the message (Small Text) field in DocType 'Tilda Webhook Log'
+#: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
+msgid "Message / Error"
+msgstr ""
+
+#. Label of the overwrite_if_exists (Check) field in DocType 'Tilda Default
+#. Value'
+#: tilda/frappe_tilda/doctype/tilda_default_value/tilda_default_value.json
+msgid "Overwrite if value exists from Tilda"
+msgstr ""
+
+#. Label of the payload (Code) field in DocType 'Tilda Webhook Log'
+#: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
+msgid "Payload"
+msgstr ""
+
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.js:18
+msgid "Please save the document before regenerating the key."
+msgstr ""
+
+#. Option for the 'Status' (Select) field in DocType 'Tilda Webhook Log'
+#: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
+msgid "Processing"
+msgstr ""
+
+#. Label of the processing_time_ms (Int) field in DocType 'Tilda Webhook Log'
+#: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
+msgid "Processing Time (ms)"
+msgstr ""
+
+#. Label of the received_at (Datetime) field in DocType 'Tilda Webhook Log'
+#: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
+msgid "Received At"
+msgstr ""
+
+#. Label of the section_break_payload (Section Break) field in DocType 'Tilda
+#. Webhook Log'
+#: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
+msgid "Received Data"
+msgstr ""
+
+#. Label of the section_break_logs (Section Break) field in DocType 'Tilda
+#. Webhook Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Recent Logs"
+msgstr ""
+
+#. Label of the regenerate_key_button (Button) field in DocType 'Tilda Webhook
+#. Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Regenerate Key"
+msgstr ""
+
+#. Label of the secret_key (Password) field in DocType 'Tilda Webhook
+#. Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Secret Key"
+msgstr ""
+
+#. Description of the 'Target Doctype' (Link) field in DocType 'Tilda Webhook
+#. Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Select the Frappe Doctype to create (e.g., 'Lead')."
+msgstr ""
+
+#. Description of the 'Frappe Field Name' (Select) field in DocType 'Tilda
+#. Default Value'
+#: tilda/frappe_tilda/doctype/tilda_default_value/tilda_default_value.json
+msgid "Select the field in the Target Doctype to set a default value for."
+msgstr ""
+
+#. Description of the 'Default Values' (Table) field in DocType 'Tilda Webhook
+#. Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Set default values for Frappe fields if they are not provided by Tilda or need to be overwritten."
+msgstr ""
+
+#. Label of the status (Select) field in DocType 'Tilda Webhook Log'
+#: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
+msgid "Status"
+msgstr ""
+
+#. Option for the 'Status' (Select) field in DocType 'Tilda Webhook Log'
+#: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
+msgid "Success"
+msgstr ""
+
+#. Name of a role
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+#: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
+msgid "System Manager"
+msgstr ""
+
+#. Label of the section_break_target (Section Break) field in DocType 'Tilda
+#. Webhook Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Target Configuration"
+msgstr ""
+
+#. Label of the target_doctype (Link) field in DocType 'Tilda Webhook
+#. Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Target Doctype"
+msgstr ""
+
+#. Description of the 'Frappe Field Name' (Select) field in DocType 'Tilda
+#. Field Mapping'
+#: tilda/frappe_tilda/doctype/tilda_field_mapping/tilda_field_mapping.json
+msgid "The corresponding fieldname in the selected Target Doctype."
+msgstr ""
+
+#. Description of the 'Tilda Field Name' (Data) field in DocType 'Tilda Field
+#. Mapping'
+#: tilda/frappe_tilda/doctype/tilda_field_mapping/tilda_field_mapping.json
+msgid "The exact name of the field variable sent by Tilda (case-sensitive, e.g., 'Name', 'Email', 'phone', 'custom_field')."
+msgstr ""
+
+#. Name of a DocType
+#: tilda/frappe_tilda/doctype/tilda_default_value/tilda_default_value.json
+msgid "Tilda Default Value"
+msgstr ""
+
+#. Name of a DocType
+#: tilda/frappe_tilda/doctype/tilda_field_mapping/tilda_field_mapping.json
+msgid "Tilda Field Mapping"
+msgstr ""
+
+#. Label of the tilda_field_name (Data) field in DocType 'Tilda Field Mapping'
+#: tilda/frappe_tilda/doctype/tilda_field_mapping/tilda_field_mapping.json
+msgid "Tilda Field Name"
+msgstr ""
+
+#. Name of a DocType
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Tilda Webhook Configuration"
+msgstr ""
+
+#. Name of a DocType
+#: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
+msgid "Tilda Webhook Log"
+msgstr ""
+
+#. Description of the 'Processing Time (ms)' (Int) field in DocType 'Tilda
+#. Webhook Log'
+#: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
+msgid "Time taken by the background job to process the webhook."
+msgstr ""
+
+#. Description of the 'Secret Key' (Password) field in DocType 'Tilda Webhook
+#. Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Unique key to authenticate incoming requests. This is part of the webhook URL."
+msgstr ""
+
+#. Label of the webhook_configuration (Link) field in DocType 'Tilda Webhook
+#. Log'
+#: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
+msgid "Webhook Configuration"
+msgstr ""
+
+#. Label of the section_break_1 (Section Break) field in DocType 'Tilda Webhook
+#. Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Webhook Details"
+msgstr ""
+
+#. Label of the webhook_name (Data) field in DocType 'Tilda Webhook
+#. Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Webhook Name"
+msgstr ""
+
+#. Label of the webhook_url_html (Small Text) field in DocType 'Tilda Webhook
+#. Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Webhook URL"
+msgstr ""
+

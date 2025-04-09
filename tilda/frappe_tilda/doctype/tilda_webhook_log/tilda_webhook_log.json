@@ -1,0 +1,107 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-04-09 16:40:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "webhook_configuration",
+  "status",
+  "message",
+  "column_break_1",
+  "received_at",
+  "processing_time_ms",
+  "section_break_payload",
+  "payload",
+  "created_document_link"
+ ],
+ "fields": [
+  {
+   "fieldname": "webhook_configuration",
+   "fieldtype": "Link",
+   "label": "Webhook Configuration",
+   "options": "Tilda Webhook Configuration",
+   "reqd": 1,
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nProcessing\nSuccess\nError",
+   "reqd": 1,
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "message",
+   "fieldtype": "Small Text",
+   "label": "Message / Error",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "received_at",
+   "fieldtype": "Datetime",
+   "label": "Received At",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+    "fieldname": "processing_time_ms",
+    "fieldtype": "Int",
+    "label": "Processing Time (ms)",
+    "read_only": 1,
+    "description": "Time taken by the background job to process the webhook."
+   },
+  {
+   "fieldname": "section_break_payload",
+   "fieldtype": "Section Break",
+   "label": "Received Data"
+  },
+  {
+   "fieldname": "payload",
+   "fieldtype": "Code",
+   "label": "Payload",
+   "options": "JSON",
+   "read_only": 1
+  },
+  {
+    "fieldname": "created_document_link",
+    "fieldtype": "HTML",
+    "label": "Created Document",
+    "read_only": 1
+   }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2024-04-09 16:45:00.000000",
+ "modified_by": "Administrator",
+ "module": "Frappe Tilda",
+ "name": "Tilda Webhook Log",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "received_at",
+ "sort_order": "DESC",
+ "title_field": "webhook_configuration",
+ "track_changes": 0,
+ "track_seen": 0
+} 
