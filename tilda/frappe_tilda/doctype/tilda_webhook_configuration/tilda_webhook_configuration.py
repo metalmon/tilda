@@ -17,12 +17,28 @@ class TildaWebhookConfiguration(Document):
              self.webhook_url_html = self._get_webhook_url()
 
     def onload(self):
-        # Используем set_onload для передачи данных в UI без модификации self
+        # --- Get parameters and add diagnostic logging at the very start ---
+        # Get config_name and key from request query parameters directly first
+        config_name = frappe.request.args.get("config")
+        request_key = frappe.request.args.get("key")
+        config_name_for_log = config_name or "UNKNOWN_CONFIG"
+
+        # print(f"--- Tilda Webhook: ENTERING handle_webhook for config '{config_name_for_log}' ---")
+        try:
+            frappe.logger().info(f"--- Tilda Webhook: ENTERING handle_webhook for config '{config_name_for_log}' via logger ---")
+        except Exception as log_init_err:
+            # print(f"--- Tilda Webhook: ERROR initializing logger: {log_init_err} ---")
+            pass # Avoid stopping execution if logger fails initially
+        # -------------------------------------------------------------------
+
+        # Set values needed by the client
         url_string = self._get_webhook_url()
-        logs_html_string = self._get_logs_html()
-        # Указываем имя поля из JSON ('webhook_url_html', т.к. мы откатили переименование)
+        # logs_html_string = self._get_logs_html() # Removed
+
         self.set_onload("webhook_url_html", url_string)
-        self.set_onload("logs_html", logs_html_string)
+        # self.set_onload("logs_html", logs_html_string) # Removed
+
+        frappe.logger().info(f"[Tilda Onload] Processing onload for {self.name}")
 
     def validate(self):
         if self.target_doctype:
@@ -48,69 +64,6 @@ class TildaWebhookConfiguration(Document):
                 return "Error generating URL. Check logs."
         else:
              return "Save the document to generate the Webhook URL."
-
-    def _get_logs_html(self):
-        """Computes and returns the HTML for the recent logs view."""
-        if not getattr(self, 'name', None) or not self.enable_logging:
-            return "<div>Logging is disabled or document not saved.</div>"
-
-        try:
-            doc_name = self.name
-            logs = frappe.get_list(
-                "Tilda Webhook Log",
-                filters={"webhook_configuration": doc_name},
-                fields=["name", "creation", "status", "message"],
-                order_by="creation desc",
-                limit=5
-            )
-
-            if not logs:
-                html = "<div>No logs found for this configuration yet.</div>"
-            else:
-                html = """
-                <table class="table table-bordered table-condensed" style="font-size: 12px;">
-                    <thead>
-                        <tr>
-                            <th style="width: 15%;">Log ID</th>
-                            <th style="width: 20%;">Timestamp</th>
-                            <th style="width: 10%;">Status</th>
-                            <th>Message</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                """
-                for log in logs:
-                    status_color = {
-                        "Success": "text-success",
-                        "Error": "text-danger",
-                        "Processing": "text-warning"
-                    }.get(log.status, "")
-                    log_link = frappe.utils.get_link_to_form("Tilda Webhook Log", log.name)
-                    message_html = frappe.utils.escape_html(log.message or "")
-                    # Truncate long messages for display in table
-                    if len(message_html) > 150:
-                        message_html = message_html[:150] + "..."
-
-                    html += f"""
-                        <tr>
-                            <td><a href="{log_link}">{log.name}</a></td>
-                            <td>{frappe.utils.format_datetime(log.creation, "dd-MM-yyyy HH:mm:ss")}</td>
-                            <td class="{status_color}">{log.status}</td>
-                            <td><div style="word-wrap: break-word;">{message_html}</div></td>
-                        </tr>
-                    """
-                html += """
-                    </tbody>
-                </table>
-                """
-                list_view_link = frappe.utils.get_link_to_list("Tilda Webhook Log")
-                escaped_name = frappe.utils.escape_html(doc_name)
-                html += f'<p><a href="{list_view_link}?webhook_configuration={escaped_name}">View All Logs for this Configuration</a></p>'
-
-            return html
-        except Exception as e:
-            frappe.log_error(f"Error generating logs HTML for {self.name}: {e}", "Webhook Log HTML Generation Error")
-            return "<div>Error loading logs. Check system logs.</div>"
 
 # You will need to create the Tilda Webhook Log Doctype later.
 # You will also need to create the API endpoint handle_webhook later. 

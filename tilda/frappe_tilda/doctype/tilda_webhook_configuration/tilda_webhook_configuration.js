@@ -11,6 +11,18 @@ frappe.ui.form.on('Tilda Webhook Configuration', {
         // Инициализируем переменную для отслеживания двойного клика
         frm._last_processed_target_doctype = frm.doc.target_doctype;
 
+        let docinfo = frm.get_docinfo();
+        console.log("Tilda Config Refresh: docinfo =", docinfo); // Log the entire docinfo object
+        if (docinfo) {
+            // Обновляем URL (Small Text)
+            if (docinfo.webhook_url_html) {
+                 frappe.model.set_value(frm.doctype, frm.docname, 'webhook_url_html', docinfo.webhook_url_html);
+                 frm.refresh_field('webhook_url_html');
+            }
+        } else {
+            console.log("Tilda Config Refresh: docinfo is null or undefined."); // Log if docinfo itself is missing
+        }
+
         // Убеждаемся, что обработчик кнопки навешан (без лишнего кода в refresh)
         if (!frm.custom_regenerate_listener_attached) {
             frm.fields_dict['regenerate_key_button'].$input.off('click').on('click', function() {
@@ -18,21 +30,28 @@ frappe.ui.form.on('Tilda Webhook Configuration', {
                     frappe.throw(__("Please save the document before regenerating the key."));
                     return;
                 }
-                frm.call({
-                    method: 'tilda.frappe_tilda.utils.regenerate_tilda_key',
-                    args: { docname: frm.doc.name },
-                    callback: function(r) {
-                        console.log("Response from regenerate_tilda_key:", r);
-                        if (!r.exc && r.message && r.message.webhook_url) {
-                            console.log("Updating webhook_url_html (as text) with:", r.message.webhook_url);
-                            // Используем set_value и refresh_field для обновления UI после AJAX
-                            frappe.model.set_value(frm.doctype, frm.docname, 'webhook_url_html', r.message.webhook_url);
-                            frm.refresh_field('webhook_url_html');
-                        } else {
-                             console.error("Failed to get webhook_url from server response:", r);
-                        }
+                frappe.confirm(
+                    __('Regenerating the key will require updating the Webhook URL in Tilda. Do you want to proceed?'),
+                    () => {
+                        frm.call({
+                            method: 'tilda.frappe_tilda.utils.regenerate_tilda_key',
+                            args: { docname: frm.doc.name },
+                            callback: function(r) {
+                                console.log("Response from regenerate_tilda_key:", r);
+                                if (!r.exc && r.message && r.message.webhook_url) {
+                                    console.log("Updating webhook_url_html (as text) with:", r.message.webhook_url);
+                                    frappe.model.set_value(frm.doctype, frm.docname, 'webhook_url_html', r.message.webhook_url);
+                                    frm.refresh_field('webhook_url_html');
+                                } else {
+                                     console.error("Failed to get webhook_url from server response:", r);
+                                }
+                            }
+                        });
+                    },
+                    () => {
+                        console.log("Key regeneration cancelled.");
                     }
-                });
+                );
             });
             frm.custom_regenerate_listener_attached = true;
         }

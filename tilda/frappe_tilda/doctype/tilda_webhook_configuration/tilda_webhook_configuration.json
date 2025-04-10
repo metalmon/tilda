@@ -15,13 +15,12 @@
   "section_break_hpph",
   "regenerate_key_button",
   "webhook_url_html",
+  "tilda_instructions_html",
   "section_break_target",
   "secret_key",
   "field_mapping_section",
   "field_mappings",
-  "default_values",
-  "section_break_logs",
-  "logs_html"
+  "default_values"
  ],
  "fields": [
   {
@@ -69,6 +68,13 @@
    "read_only": 1
   },
   {
+   "fieldname": "tilda_instructions_html",
+   "fieldtype": "HTML",
+   "label": "Tilda Setup Instructions",
+   "options": "<div><h4>Tilda Webhook Setup:</h4><ol><li>Go to Site Settings → Forms → Webhook.</li><li>In the \"Webhook URL\" field, paste the URL from the field above.</li><li><b>Important:</b> Enable the option <kbd>Send data as application/json</kbd>. Our handler expects this format.</li><li>Enable the option <kbd>Send Cookies</kbd> if you want to automatically receive UTM tags (provided that the target Frappe doctype has fields like <code>utm_source</code>, <code>utm_medium</code>, etc.).</li><li>Save the webhook settings in Tilda.</li></ol><p>For more details, see the <a href=\"https://help.tilda.cc/forms/webhook\" target=\"_blank\">Tilda Webhook documentation</a>.</p></div>",
+   "read_only": 1
+  },
+  {
    "fieldname": "section_break_target",
    "fieldtype": "Section Break",
    "hidden": 1,
@@ -111,24 +117,12 @@
    "options": "Tilda Default Value"
   },
   {
-   "collapsible": 1,
-   "fieldname": "section_break_logs",
-   "fieldtype": "Section Break",
-   "label": "Recent Logs"
-  },
-  {
-   "fieldname": "logs_html",
-   "fieldtype": "HTML",
-   "label": "Logs",
-   "read_only": 1
-  },
-  {
    "fieldname": "section_break_hpph",
    "fieldtype": "Section Break"
   }
  ],
  "links": [],
- "modified": "2025-04-10 02:29:36.411182",
+ "modified": "2025-04-10 21:16:48.323115",
  "modified_by": "Administrator",
  "module": "Frappe Tilda",
  "name": "Tilda Webhook Configuration",

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Frappe Tilda VERSION\n"
 "Report-Msgid-Bugs-To: dev@frappecrm.ru\n"
-"POT-Creation-Date: 2025-04-09 22:31+0000\n"
-"PO-Revision-Date: 2025-04-09 22:31+0000\n"
+"POT-Creation-Date: 2025-04-10 17:45+0000\n"
+"PO-Revision-Date: 2025-04-10 17:45+0000\n"
 "Last-Translator: dev@frappecrm.ru\n"
 "Language-Team: dev@frappecrm.ru\n"
 "MIME-Version: 1.0\n"
@@ -16,13 +16,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.13.1\n"
 
+#. Content of the 'Tilda Setup Instructions' (HTML) field in DocType 'Tilda
+#. Webhook Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "<div><h4>Tilda Webhook Setup:</h4><ol><li>Go to Site Settings → Forms → Webhook.</li><li>In the \"Webhook URL\" field, paste the URL from the field above.</li><li><b>Important:</b> Enable the option <kbd>Send data as application/json</kbd>. Our handler expects this format.</li><li>Enable the option <kbd>Send Cookies</kbd> if you want to automatically receive UTM tags (provided that the target Frappe doctype has fields like <code>utm_source</code>, <code>utm_medium</code>, etc.).</li><li>Save the webhook settings in Tilda.</li></ol><p>For more details, see the <a href=\"https://help.tilda.cc/forms/webhook\" target=\"_blank\">Tilda Webhook documentation</a>.</p></div>"
+msgstr ""
+
 #. Description of the 'Webhook Name' (Data) field in DocType 'Tilda Webhook
 #. Configuration'
 #: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
 msgid "A descriptive name for this webhook configuration (e.g., 'Main Contact Form')."
 msgstr ""
 
-#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.js:59
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.js:82
 msgid "Clear existing mappings/defaults and auto-add required fields?"
 msgstr ""
 
@@ -132,7 +138,7 @@ msgstr ""
 msgid "Payload"
 msgstr ""
 
-#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.js:18
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.js:34
 msgid "Please save the document before regenerating the key."
 msgstr ""
 
@@ -167,6 +173,10 @@ msgstr ""
 #. Configuration'
 #: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
 msgid "Regenerate Key"
+msgstr ""
+
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.js:38
+msgid "Regenerating the key will require updating the Webhook URL in Tilda. Do you want to proceed?"
 msgstr ""
 
 #. Label of the secret_key (Password) field in DocType 'Tilda Webhook
@@ -246,6 +256,12 @@ msgstr ""
 #. Label of the tilda_field_name (Data) field in DocType 'Tilda Field Mapping'
 #: tilda/frappe_tilda/doctype/tilda_field_mapping/tilda_field_mapping.json
 msgid "Tilda Field Name"
+msgstr ""
+
+#. Label of the tilda_instructions_html (HTML) field in DocType 'Tilda Webhook
+#. Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Tilda Setup Instructions"
 msgstr ""
 
 #. Name of a DocType
