@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Frappe Tilda VERSION\n"
 "Report-Msgid-Bugs-To: dev@frappecrm.ru\n"
-"POT-Creation-Date: 2025-04-10 17:45+0000\n"
-"PO-Revision-Date: 2025-04-10 21:49+0400\n"
+"POT-Creation-Date: 2025-04-11 18:55+0000\n"
+"PO-Revision-Date: 2025-04-11 23:00+0400\n"
 "Last-Translator: AlexKuzin <dev@olimpicfresh.ru>\n"
 "Language-Team: dev@frappecrm.ru\n"
 "Language: ru\n"
@@ -31,12 +31,58 @@ msgstr "<div><h4>Настройка Webhook в Tilda:</h4><ol><li>Перейди
 msgid "A descriptive name for this webhook configuration (e.g., 'Main Contact Form')."
 msgstr "Описательное имя для этой конфигурации вебхука (например, 'Заявка с сайта')."
 
-#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.js:82
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.js:43
+msgid "An error occurred while trying to start the import."
+msgstr "При попытке начать импорт произошла ошибка."
+
+#. Label of the multi_field_behavior (Select) field in DocType 'Tilda Field
+#. Mapping'
+#: tilda/frappe_tilda/doctype/tilda_field_mapping/tilda_field_mapping.json
+msgid "Behavior for Multiple Tilda Fields"
+msgstr "Поведение для нескольких полей Тильды"
+
+#. Label of the csv_delimiter (Data) field in DocType 'Tilda CSV Importer'
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.json
+msgid "CSV Delimiter"
+msgstr "CSV Разделитель"
+
+#. Label of the row_number (Int) field in DocType 'Tilda Import Log Entry'
+#: tilda/frappe_tilda/doctype/tilda_import_log_entry/tilda_import_log_entry.json
+msgid "CSV Row"
+msgstr "Строка CSV"
+
+#. Description of the 'Behavior for Multiple Tilda Fields' (Select) field in
+#. DocType 'Tilda Field Mapping'
+#: tilda/frappe_tilda/doctype/tilda_field_mapping/tilda_field_mapping.json
+msgid "Choose how to handle multiple Tilda fields (comma-separated) mapped to one Frappe field. 'Overwrite': Use the first non-empty value found. 'Concatenate': Join all non-empty values with a space (best for text fields)."
+msgstr "Выберите, как обрабатывать несколько полей Tilda (разделенных запятыми), сопоставленных с одним полем Frappe. 'Перезаписать': Используйте первое найденное непустое значение. 'Объединить': Объедините все непустые значения разделителем (лучше всего подходит для текстовых полей)."
+
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.js:81
 msgid "Clear existing mappings/defaults and auto-add required fields?"
 msgstr "Очистить существующие отображения/настройки по умолчанию и автоматически добавить необходимые поля?"
 
+#. Option for the 'Status' (Select) field in DocType 'Tilda CSV Importer'
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.json
+msgid "Completed"
+msgstr "Завершено"
+
+#. Option for the 'Behavior for Multiple Tilda Fields' (Select) field in
+#. DocType 'Tilda Field Mapping'
+#: tilda/frappe_tilda/doctype/tilda_field_mapping/tilda_field_mapping.json
+msgid "Concatenate"
+msgstr "Объединить"
+
+#. Label of the concatenation_delimiter (Data) field in DocType 'Tilda Field
+#. Mapping'
+#: tilda/frappe_tilda/doctype/tilda_field_mapping/tilda_field_mapping.json
+msgid "Concatenation Delimiter"
+msgstr "Разделитель объединения"
+
+#. Label of the created_document (Dynamic Link) field in DocType 'Tilda Import
+#. Log Entry'
 #. Label of the created_document_link (HTML) field in DocType 'Tilda Webhook
 #. Log'
+#: tilda/frappe_tilda/doctype/tilda_import_log_entry/tilda_import_log_entry.json
 #: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
 msgid "Created Document"
 msgstr "Созданный документ"
@@ -76,9 +122,16 @@ msgstr "Включено"
 msgid "Enter the default value as text. It will be converted to the target field's type if possible (e.g., '1' for Checkbox, '2024-12-31' for Date)."
 msgstr "Введите значение по умолчанию в виде текста. По возможности оно будет преобразовано в тип целевого поля (например, '1' для Checkbox, '2024-12-31' для Date)."
 
+#. Option for the 'Status' (Select) field in DocType 'Tilda Import Log Entry'
 #. Option for the 'Status' (Select) field in DocType 'Tilda Webhook Log'
+#: tilda/frappe_tilda/doctype/tilda_import_log_entry/tilda_import_log_entry.json
 #: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
 msgid "Error"
+msgstr "Ошибка"
+
+#. Option for the 'Status' (Select) field in DocType 'Tilda CSV Importer'
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.json
+msgid "Failed"
 msgstr "Ошибка"
 
 #. Label of the field_mapping_section (Section Break) field in DocType 'Tilda
@@ -105,8 +158,15 @@ msgstr "Название поля Frappe"
 #. Description of the 'Overwrite if value exists from Tilda' (Check) field in
 #. DocType 'Tilda Default Value'
 #: tilda/frappe_tilda/doctype/tilda_default_value/tilda_default_value.json
-msgid "If checked, this default value will replace any value mapped from the Tilda form for the same field."
-msgstr "Если флажок установлен, это значение по умолчанию заменит любое значение, сопоставленное с формой Tilda для того же поля."
+msgid "If checked, this default value will replace any value mapped from the Tilda payload/cookies for the same field."
+msgstr "Если флажок установлен, это значение по умолчанию заменит любое значение, сопоставленное с полезной нагрузкой/куками Tilda для того же поля."
+
+#. Label of the section_break_log (Section Break) field in DocType 'Tilda CSV
+#. Importer'
+#. Label of the import_log (Table) field in DocType 'Tilda CSV Importer'
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.json
+msgid "Import Log"
+msgstr "Журнал импорта"
 
 #. Description of the 'Enable Logging' (Check) field in DocType 'Tilda Webhook
 #. Configuration'
@@ -114,24 +174,26 @@ msgstr "Если флажок установлен, это значение по
 msgid "Log incoming requests in Tilda Webhook Log."
 msgstr "Регистрируйте входящие запросы в журнале логов Тильды."
 
-#. Label of the logs_html (HTML) field in DocType 'Tilda Webhook Configuration'
-#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
-msgid "Logs"
-msgstr "Журнал"
-
 #. Description of the 'Field Mappings' (Table) field in DocType 'Tilda Webhook
 #. Configuration'
 #: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
 msgid "Map incoming Tilda form field names to Frappe Doctype fields."
 msgstr "Сопоставьте имена входящих полей формы Tilda с полями Frappe."
 
+#. Label of the message (Small Text) field in DocType 'Tilda Import Log Entry'
 #. Label of the message (Small Text) field in DocType 'Tilda Webhook Log'
+#: tilda/frappe_tilda/doctype/tilda_import_log_entry/tilda_import_log_entry.json
 #: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
 msgid "Message / Error"
 msgstr "Сообщение / Ошибка"
 
-#. Label of the overwrite_if_exists (Check) field in DocType 'Tilda Default
-#. Value'
+#. Option for the 'Behavior for Multiple Tilda Fields' (Select) field in
+#. DocType 'Tilda Field Mapping'
+#: tilda/frappe_tilda/doctype/tilda_field_mapping/tilda_field_mapping.json
+msgid "Overwrite"
+msgstr "Перезаписать"
+
+#. Label of the overwrite_mapped (Check) field in DocType 'Tilda Default Value'
 #: tilda/frappe_tilda/doctype/tilda_default_value/tilda_default_value.json
 msgid "Overwrite if value exists from Tilda"
 msgstr "Перезапишите, если значение существует в Tilda"
@@ -141,11 +203,18 @@ msgstr "Перезапишите, если значение существует
 msgid "Payload"
 msgstr "Полезная нагрузка"
 
-#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.js:34
+#. Option for the 'Status' (Select) field in DocType 'Tilda CSV Importer'
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.json
+msgid "Pending"
+msgstr "В ожидании"
+
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.js:33
 msgid "Please save the document before regenerating the key."
 msgstr "Пожалуйста, сохраните документ, прежде чем генерировать ключ."
 
+#. Option for the 'Status' (Select) field in DocType 'Tilda CSV Importer'
 #. Option for the 'Status' (Select) field in DocType 'Tilda Webhook Log'
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.json
 #: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
 msgid "Processing"
 msgstr "Обработка"
@@ -166,19 +235,13 @@ msgstr "Получено в"
 msgid "Received Data"
 msgstr "Полученные данные"
 
-#. Label of the section_break_logs (Section Break) field in DocType 'Tilda
-#. Webhook Configuration'
-#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
-msgid "Recent Logs"
-msgstr "Последние записи журнала"
-
 #. Label of the regenerate_key_button (Button) field in DocType 'Tilda Webhook
 #. Configuration'
 #: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
 msgid "Regenerate Key"
 msgstr "Регенерировать ключ"
 
-#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.js:38
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.js:37
 msgid "Regenerating the key will require updating the Webhook URL in Tilda. Do you want to proceed?"
 msgstr "После регенерации ключа потребуется обновить URL Webhook в Tilda. Готовы продолжить?"
 
@@ -200,23 +263,44 @@ msgstr "Выберите доктайп Frappe для создания (напр
 msgid "Select the field in the Target Doctype to set a default value for."
 msgstr "Выберите поле в доктайпе, для которого нужно установить значение по умолчанию."
 
+#. Description of the 'Webhook Configuration to Use' (Link) field in DocType
+#. 'Tilda CSV Importer'
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.json
+msgid "Select the webhook configuration whose mappings and defaults should be used for this import."
+msgstr "Выберите конфигурацию вебхука, чьи сопоставления и настройки по умолчанию должны использоваться для этого импорта."
+
 #. Description of the 'Default Values' (Table) field in DocType 'Tilda Webhook
 #. Configuration'
 #: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
 msgid "Set default values for Frappe fields if they are not provided by Tilda or need to be overwritten."
 msgstr "Установите значения по умолчанию для полей Frappe, если они не предусмотрены Tilda или должны быть перезаписаны."
 
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.js:18
+msgid "Start Import"
+msgstr "Начать импорт"
+
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.js:21
+msgid "Starting import process..."
+msgstr "Начало процесса импорта..."
+
+#. Label of the status (Select) field in DocType 'Tilda CSV Importer'
+#. Label of the status (Select) field in DocType 'Tilda Import Log Entry'
 #. Label of the status (Select) field in DocType 'Tilda Webhook Log'
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.json
+#: tilda/frappe_tilda/doctype/tilda_import_log_entry/tilda_import_log_entry.json
 #: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
 msgid "Status"
 msgstr "Статус"
 
+#. Option for the 'Status' (Select) field in DocType 'Tilda Import Log Entry'
 #. Option for the 'Status' (Select) field in DocType 'Tilda Webhook Log'
+#: tilda/frappe_tilda/doctype/tilda_import_log_entry/tilda_import_log_entry.json
 #: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
 msgid "Success"
 msgstr "Успешно"
 
 #. Name of a role
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.json
 #: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
 #: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
 msgid "System Manager"
@@ -234,6 +318,24 @@ msgstr "Конфигурация цели"
 msgid "Target Doctype"
 msgstr "Целевой доктайп"
 
+#. Label of the target_document_type (Link) field in DocType 'Tilda Import Log
+#. Entry'
+#: tilda/frappe_tilda/doctype/tilda_import_log_entry/tilda_import_log_entry.json
+msgid "Target Document Type"
+msgstr "Тип целевого документа"
+
+#. Description of the 'CSV Delimiter' (Data) field in DocType 'Tilda CSV
+#. Importer'
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.json
+msgid "The character used to separate fields in the CSV file (e.g., ',' or ';')."
+msgstr "Символ, используемый для разделения полей в CSV-файле (например, ',' или ';')."
+
+#. Description of the 'Concatenation Delimiter' (Data) field in DocType 'Tilda
+#. Field Mapping'
+#: tilda/frappe_tilda/doctype/tilda_field_mapping/tilda_field_mapping.json
+msgid "The character(s) used to join values when 'Concatenate' behavior is selected (e.g., space, comma, | ). Defaults to a single space."
+msgstr "Символ(ы), используемый(еся) для объединения значений, когда выбрано поведение 'Объединить' (например, пробел, запятая, | ). По умолчанию используется один пробел."
+
 #. Description of the 'Frappe Field Name' (Select) field in DocType 'Tilda
 #. Field Mapping'
 #: tilda/frappe_tilda/doctype/tilda_field_mapping/tilda_field_mapping.json
@@ -247,9 +349,19 @@ msgid "The exact name of the field variable sent by Tilda (case-sensitive, e.g.,
 msgstr "Точное имя переменной поля, отправленное Tilda (с учетом регистра, например, 'Name', 'Email', 'phone', 'custom_field')."
 
 #. Name of a DocType
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.json
+msgid "Tilda CSV Importer"
+msgstr "Импорт Tilda из CSV"
+
+#. Name of a DocType
 #: tilda/frappe_tilda/doctype/tilda_default_value/tilda_default_value.json
 msgid "Tilda Default Value"
 msgstr "Тильда Значение по умолчанию"
+
+#. Label of the csv_file (Attach) field in DocType 'Tilda CSV Importer'
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.json
+msgid "Tilda Export CSV File"
+msgstr "Tilda Экспорт CSV-файла"
 
 #. Name of a DocType
 #: tilda/frappe_tilda/doctype/tilda_field_mapping/tilda_field_mapping.json
@@ -260,6 +372,11 @@ msgstr "Маппинг полей Тильды"
 #: tilda/frappe_tilda/doctype/tilda_field_mapping/tilda_field_mapping.json
 msgid "Tilda Field Name"
 msgstr "Название поля в Тильде"
+
+#. Name of a DocType
+#: tilda/frappe_tilda/doctype/tilda_import_log_entry/tilda_import_log_entry.json
+msgid "Tilda Import Log Entry"
+msgstr "Запись в журнале импорта Tilda"
 
 #. Label of the tilda_instructions_html (HTML) field in DocType 'Tilda Webhook
 #. Configuration'
@@ -289,11 +406,23 @@ msgstr "Время, необходимое фоновому заданию дл�
 msgid "Unique key to authenticate incoming requests. This is part of the webhook URL."
 msgstr "Уникальный ключ для аутентификации входящих запросов. Это часть URL-адреса вебхука."
 
+#. Description of the 'Tilda Export CSV File' (Attach) field in DocType 'Tilda
+#. CSV Importer'
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.json
+msgid "Upload the CSV file exported from Tilda."
+msgstr "Загрузите CSV-файл, экспортированный из Tilda."
+
 #. Label of the webhook_configuration (Link) field in DocType 'Tilda Webhook
 #. Log'
 #: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
 msgid "Webhook Configuration"
 msgstr "Конфигурация вебхука"
+
+#. Label of the webhook_configuration (Link) field in DocType 'Tilda CSV
+#. Importer'
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.json
+msgid "Webhook Configuration to Use"
+msgstr "Используемая конфигурация Webhook"
 
 #. Label of the section_break_1 (Section Break) field in DocType 'Tilda Webhook
 #. Configuration'
