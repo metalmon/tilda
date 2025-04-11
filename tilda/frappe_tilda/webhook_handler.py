@@ -243,7 +243,7 @@ def process_webhook_data(config_name: str, payload: dict, log_name: str = None):
         if len(new_doc_data) > 1: # Ensure we have more than just {"doctype": ...}
             new_doc = frappe.get_doc(new_doc_data)
             # Add log after get_doc to confirm success
-            log_msg_get_doc = f"[Tilda Process {config_name}] Successfully got doc object for {new_doc.name if new_doc else 'None'}"
+            log_msg_get_doc = frappe._("[Tilda Process {0}] Successfully got doc object for {1}").format(config_name, new_doc.name if new_doc else 'None')
             frappe.logger().error(log_msg_get_doc)
             print(log_msg_get_doc) # Add print statement
             # Set naming series if applicable
@@ -257,7 +257,7 @@ def process_webhook_data(config_name: str, payload: dict, log_name: str = None):
 
             new_doc.insert(ignore_permissions=True) # Assuming guest access means we ignore permissions here
             frappe.db.commit()
-            success_message = f"Successfully created {target_doctype} {new_doc.name}."
+            success_message = frappe._("Successfully created {0} {1}.").format(target_doctype, new_doc.name)
             if log_doc:
                 log_doc.status = "Success"
                 log_doc.message = success_message
