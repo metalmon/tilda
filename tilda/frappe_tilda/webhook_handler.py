@@ -250,74 +250,77 @@ def process_webhook_data(config_name: str, payload: dict, log_name: str = None):
         # 1. Process COOKIES (Universal Parsing)
         if "COOKIES" in payload:
             cookie_data = parse_tilda_cookies(payload["COOKIES"])
-            frappe.logger().info(f"[Tilda Process {config_name}] Parsed Cookies: {cookie_data}") # Log parsed cookies
+            frappe.logger().info(f"[Tilda Process {config_name}] Parsed Cookies: {cookie_data}")
 
-            for cookie_key, cookie_value in cookie_data.items():
-                mapped_to_frappe = None
-                if mappings:
-                    for mapping in mappings:
-                        if mapping.tilda_field_name == cookie_key:
-                            mapped_to_frappe = mapping.frappe_field_name
-                            break
+            if mappings:
+                for mapping in mappings:
+                    possible_tilda_fields = [f.strip() for f in mapping.tilda_field_name.split(',')]
+                    frappe_field = mapping.frappe_field_name
 
-                if mapped_to_frappe:
-                    frappe_field = mapped_to_frappe
-                    field_meta = target_meta.get_field(frappe_field)
-                    if field_meta:
-                        converted = convert_value(cookie_value, field_meta)
-                        if converted is not None or (cookie_value is None or cookie_value == ''):
-                            new_doc_data[frappe_field] = converted
-                            processed_tilda_fields.add(cookie_key) # Mark as processed
-                            frappe.logger().info(f"[Tilda Process {config_name}] Mapped Cookie: '{cookie_key}' -> '{frappe_field}' = {converted}")
-                    else:
-                        frappe.log_error(f"Mapped Frappe field '{frappe_field}' (from cookie '{cookie_key}') not found in Doctype '{target_doctype}'.", "Tilda Webhook Configuration Error")
-                # else: # Optional: Log unmapped cookies if needed
-                #     frappe.logger().debug(f"[Tilda Process {config_name}] Unmapped cookie: {cookie_key}")
+                    for potential_field in possible_tilda_fields:
+                        if potential_field in cookie_data:
+                            cookie_value = cookie_data[potential_field]
+                            if cookie_value is not None and cookie_value != '':
+                                # Found a non-empty cookie value for this rule
+                                if frappe_field not in new_doc_data:
+                                    field_meta = target_meta.get_field(frappe_field)
+                                    if field_meta:
+                                        converted = convert_value(cookie_value, field_meta)
+                                        if converted is not None or (cookie_value is None or cookie_value == ''): # Re-check needed after conversion?
+                                            new_doc_data[frappe_field] = converted
+                                            processed_tilda_fields.add(potential_field) # Mark specific Tilda field as processed
+                                            frappe.logger().info(f"[Tilda Process {config_name}] Mapped Cookie '{potential_field}' -> '{frappe_field}' = {converted} (Rule: '{mapping.tilda_field_name}')")
+                                            # Break from checking other potential_fields for THIS mapping rule
+                                            break
+                                    else:
+                                         frappe.log_error(f"Mapped Frappe field '{frappe_field}' (from cookie '{potential_field}') not found in Doctype '{target_doctype}'.", "Tilda Webhook Configuration Error")
+                                         # Break? Or continue checking other fields in rule?
+                                         break # Break for safety if target field invalid
+                                else:
+                                    frappe.logger().warning(f"[Tilda Process {config_name}] Frappe field '{frappe_field}' already set. Skipping cookie '{potential_field}' for rule '{mapping.tilda_field_name}'.")
+                                    # Break from checking other potential_fields for THIS mapping rule
+                                    break
+                            # else: cookie value is empty, continue checking next potential_field in the list
             processed_tilda_fields.add("COOKIES") # Mark COOKIES key itself as processed
 
         # 2. Process other payload fields using mappings
-        for tilda_field, value in payload.items():
-            # Skip if already processed (e.g., was a mapped cookie key or the COOKIES key itself)
-            if tilda_field in processed_tilda_fields:
-                continue
+        frappe.logger().info(f"[Tilda Process {config_name}] Processing payload fields...")
+        if mappings:
+            for mapping in mappings:
+                possible_tilda_fields = [f.strip() for f in mapping.tilda_field_name.split(',')]
+                frappe_field = mapping.frappe_field_name
 
-            # Skip internal Tilda fields unless explicitly mapped
-            # Allow mapping them if needed, so remove this check or make it conditional
-            # if tilda_field in ["tranid", "formid", "formname", "pageid", "formland", "userid", "date", "time", "ip", "useragent", "referrer"]:
-            #     # Check if it's EXPLICITLY mapped
-            #     is_explicitly_mapped = False
-            #     if mappings:
-            #         for mapping in mappings:
-            #             if mapping.tilda_field_name == tilda_field:
-            #                 is_explicitly_mapped = True
-            #                 break
-            #     if not is_explicitly_mapped:
-            #         continue # Skip if it's an internal field and not explicitly mapped
+                for potential_field in possible_tilda_fields:
+                    if potential_field in processed_tilda_fields:
+                        # Already handled by cookie processing or an earlier mapping rule applied to payload
+                        continue
 
-            mapped_to_frappe = None
-            if mappings:
-                for mapping in mappings:
-                    if mapping.tilda_field_name == tilda_field:
-                        mapped_to_frappe = mapping.frappe_field_name
-                        break
+                    if potential_field in payload:
+                        payload_value = payload[potential_field]
 
-            if mapped_to_frappe:
-                frappe_field = mapped_to_frappe
-                field_meta = target_meta.get_field(frappe_field)
-                if field_meta:
-                    # Avoid overwriting data already set (e.g., by a cookie mapping for the same tilda_field_name)
-                    if frappe_field in new_doc_data:
-                         frappe.logger().warning(f"[Tilda Process {config_name}] Field '{frappe_field}' already set (possibly by cookie '{tilda_field}'). Skipping mapping from payload field '{tilda_field}'.")
-                         continue
-
-                    converted = convert_value(value, field_meta)
-                    if converted is not None or (value is None or value == ''):
-                         new_doc_data[frappe_field] = converted
-                         frappe.logger().info(f"[Tilda Process {config_name}] Mapped Payload: '{tilda_field}' -> '{frappe_field}' = {converted}")
-                    else:
-                        frappe.log_error(f"Mapped Frappe field '{frappe_field}' (from payload field '{tilda_field}') not found in Doctype '{target_doctype}'.", "Tilda Webhook Configuration Error")
-            # else: # Optional: Log unmapped payload fields if needed
-            #     frappe.logger().debug(f"[Tilda Process {config_name}] Unmapped payload field: {tilda_field}")
+                        if payload_value is not None and payload_value != '':
+                            # Found a non-empty payload value for this rule
+                            if frappe_field not in new_doc_data:
+                                field_meta = target_meta.get_field(frappe_field)
+                                if field_meta:
+                                    converted = convert_value(payload_value, field_meta)
+                                    if converted is not None or (payload_value is None or payload_value == ''):
+                                        new_doc_data[frappe_field] = converted
+                                        processed_tilda_fields.add(potential_field) # Mark specific Tilda field as processed
+                                        frappe.logger().info(f"[Tilda Process {config_name}] Mapped Payload '{potential_field}' -> '{frappe_field}' = {converted} (Rule: '{mapping.tilda_field_name}')")
+                                        # Break from checking other potential_fields for THIS mapping rule
+                                        break
+                                else:
+                                     frappe.log_error(f"Mapped Frappe field '{frappe_field}' (from payload field '{potential_field}') not found in Doctype '{target_doctype}'.", "Tilda Webhook Configuration Error")
+                                     # Break? Or continue checking other fields in rule?
+                                     break # Break for safety if target field invalid
+                            else:
+                                frappe.logger().warning(f"[Tilda Process {config_name}] Frappe field '{frappe_field}' already set. Skipping payload field '{potential_field}' for rule '{mapping.tilda_field_name}'.")
+                                # Break from checking other potential_fields for THIS mapping rule
+                                break
+                        else:
+                            # Payload value is empty, mark as processed and continue checking next potential_field
+                            processed_tilda_fields.add(potential_field)
 
         # 3. Apply default values
         frappe.logger().info(f"[Tilda Process {config_name}] Applying default values...")
