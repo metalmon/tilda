@@ -21,18 +21,29 @@ def regenerate_tilda_key(docname: str):
         frappe.db.set_value("Tilda Webhook Configuration", docname, "secret_key", new_key, update_modified=False)
         print(f"Atomic save for secret_key completed for {docname}.")
 
-        # 3. Calculate URL using the NEW key
-        site_url = frappe.utils.get_site_url(frappe.local.site)
-        api_path = f"/api/method/tilda.frappe_tilda.webhook_handler.handle_webhook/{docname}?key={new_key}"
-        full_url = urljoin(site_url, api_path)
+        # 3. Get the document instance to call its _get_webhook_url method
+        # This ensures we use the same logic (e.g., https, query params)
+        try:
+            doc = frappe.get_doc("Tilda Webhook Configuration", docname)
+            # The get_doc call above will have the *old* key, but _get_webhook_url
+            # uses get_password() which should read the *new* key just saved by set_value.
+            # If get_password relies on the doc object's state, we might need to reload or pass the new key.
+            # Let's assume get_password reads fresh from DB for now.
+            correct_url = doc._get_webhook_url()
+            if not correct_url or "Error" in correct_url:
+                raise ValueError(f"_get_webhook_url returned an error or empty value: {correct_url}")
+            print(f"Generated correct URL via doc._get_webhook_url for {docname}: {correct_url}")
+        except Exception as url_exc:
+             frappe.log_error(traceback.format_exc(), f"Error calling _get_webhook_url in regenerate_tilda_key for {docname}")
+             frappe.throw(f"Failed to generate the new webhook URL for {docname}. Error: {str(url_exc)}")
 
-        # 4. Atomically update webhook_url_html in DB
+        # 4. Atomically update webhook_url_html in DB with the CORRECT URL
         print(f"Attempting atomic save for webhook_url_html in {docname}...")
-        frappe.db.set_value("Tilda Webhook Configuration", docname, "webhook_url_html", full_url, update_modified=False)
+        frappe.db.set_value("Tilda Webhook Configuration", docname, "webhook_url_html", correct_url, update_modified=False)
         print(f"Atomic save for webhook_url_html completed for {docname}.")
 
-        # 5. Return the calculated URL for JS update
-        return {"webhook_url": full_url}
+        # 5. Return the calculated CORRECT URL for JS update
+        return {"webhook_url": correct_url}
 
     except Exception as e:
         error_details = traceback.format_exc()

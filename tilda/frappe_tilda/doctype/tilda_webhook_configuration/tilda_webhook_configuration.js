@@ -16,8 +16,11 @@ frappe.ui.form.on('Tilda Webhook Configuration', {
         if (docinfo) {
             // Обновляем URL (Small Text)
             if (docinfo.webhook_url_html) {
+                 console.log("[Tilda Config Refresh] Received webhook_url_html from onload:", docinfo.webhook_url_html); // Log received URL
                  frappe.model.set_value(frm.doctype, frm.docname, 'webhook_url_html', docinfo.webhook_url_html);
                  frm.refresh_field('webhook_url_html');
+            } else {
+                 console.log("[Tilda Config Refresh] webhook_url_html not found in docinfo.");
             }
         } else {
             console.log("Tilda Config Refresh: docinfo is null or undefined."); // Log if docinfo itself is missing
