@@ -51,7 +51,7 @@
   {
    "description": "Unique key to authenticate incoming requests. This is part of the webhook URL.",
    "fieldname": "secret_key",
-   "fieldtype": "Password",
+   "fieldtype": "Data",
    "label": "Secret Key",
    "read_only": 1
   },

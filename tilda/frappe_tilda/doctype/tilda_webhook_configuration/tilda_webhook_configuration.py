@@ -49,7 +49,6 @@ class TildaWebhookConfiguration(Document):
         """Computes and returns the webhook URL string."""
         if getattr(self, 'name', None) and self.secret_key:
             try:
-                doc_name = self.name
                 site_url = frappe.utils.get_site_url(frappe.local.site)
 
                 # Ensure HTTPS scheme
@@ -61,12 +60,11 @@ class TildaWebhookConfiguration(Document):
                 else:
                     https_site_url = site_url
 
-                # Используем get_password для получения реального ключа
-                real_secret_key = self.get_password('secret_key')
+                real_secret_key = self.secret_key
                 if not real_secret_key:
                      return "Error: Secret key not found or inaccessible."
 
-                api_path = f"/api/method/tilda.frappe_tilda.webhook_handler.handle_webhook?config={doc_name}&key={real_secret_key}"
+                api_path = f"/api/method/tilda.frappe_tilda.webhook_handler.handle_webhook?key={real_secret_key}"
                 # Use the potentially modified URL with https scheme
                 full_url = urljoin(https_site_url, api_path)
                 return full_url

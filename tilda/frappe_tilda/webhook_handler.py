@@ -17,72 +17,45 @@ def handle_webhook():
     """
     API endpoint to receive webhook POST requests from Tilda (expects application/json).
     Validates the request, optionally logs it, and enqueues a background job.
-    URL: /api/method/tilda.frappe_tilda.webhook_handler.handle_webhook?config={config_name}&key={secret_key}
+    URL: /api/method/tilda.frappe_tilda.webhook_handler.handle_webhook?key={secret_key}
     Method: POST
     Payload: application/json
     """
     # --- Get parameters and add diagnostic logging at the very start ---
-    # Get config_name and key from request query parameters directly first
-    config_name = frappe.request.args.get("config")
+    # Get key from request query parameters
     request_key = frappe.request.args.get("key")
-    config_name_for_log = config_name or "UNKNOWN_CONFIG"
+    # Initialize config as None - we'll set it when found
+    config = None
 
     # print(f"--- Tilda Webhook: ENTERING handle_webhook for config '{config_name_for_log}' ---")
     try:
-        frappe.logger().info(f"--- Tilda Webhook: ENTERING handle_webhook for config '{config_name_for_log}' via logger ---")
+        frappe.logger().info(f"--- Tilda Webhook: ENTERING handle_webhook with provided key ---")
     except Exception as log_init_err:
         # print(f"--- Tilda Webhook: ERROR initializing logger: {log_init_err} ---")
         pass # Avoid stopping execution if logger fails initially
     # -------------------------------------------------------------------
 
     received_at = now_datetime()
-    # config_name and request_key are already retrieved above
-    # config_name = frappe.request.args.get("config")
-    # request_key = frappe.request.args.get("key")
-
-    # Update diagnostic logging variable - no longer needed here as it's set above
-    # config_name_for_log = config_name or "UNKNOWN_CONFIG"
-
     log_name = None
     decoded_data = {}
 
     try:
-        # 1. Check if config_name and request_key are provided
-        if not config_name:
-            frappe.throw("Webhook Configuration Name 'config' not specified in query parameters.")
+        # 1. Check if request_key is provided
         if not request_key:
             frappe.throw("Secret Key 'key' not provided in query parameters.")
-
-        # 2. Get Webhook Configuration document
+            
+        # 2. Find webhook configuration by key - direct db query
+        # Get the configuration document directly in a single query
+        # We can use db_get to directly get the first matching document
         try:
-            config = frappe.get_doc("Tilda Webhook Configuration", config_name)
+            config = frappe.get_doc("Tilda Webhook Configuration", 
+                                   {"secret_key": request_key, "enabled": 1})
+            
+            frappe.logger().info(f"--- Tilda Webhook: Found matching configuration: '{config.name}' ---")
         except frappe.DoesNotExistError:
-            frappe.throw(f"Webhook Configuration '{config_name}' not found.")
+            frappe.throw("Invalid Secret Key. No matching configuration found.")
 
-        # 3. Validate Secret Key
-        # Use frappe.utils.password.check_password for constant-time comparison
-        # Use get_password() method for password fields
-        stored_key = config.get_password('secret_key')
-        # --- Add diagnostic logging for keys ---
-        # print(f"--- Tilda Webhook DEBUG: Stored Key = '{stored_key}' (Type: {type(stored_key)}) ---")
-        # print(f"--- Tilda Webhook DEBUG: Request Key = '{request_key}' (Type: {type(request_key)}) ---")
-        # ---------------------------------------
-        # Replace check_password with direct string comparison for debugging
-        # if not stored_key or not frappe.utils.password.check_password(stored_key, request_key):
-        keys_match = stored_key == request_key
-        # print(f"--- Tilda Webhook DEBUG: Direct comparison result (stored == request): {keys_match} ---")
-        if not stored_key or not keys_match:
-            # Log the failure reason
-            reason = "Stored key missing" if not stored_key else "Direct comparison failed"
-            # print(f"--- Tilda Webhook DEBUG: Key check failed. Reason: {reason} ---")
-            frappe.throw("Invalid Secret Key.")
-
-        # 4. Check if enabled
-        if not config.enabled:
-            # Optionally log disabled access attempts if desired
-            frappe.throw(f"Webhook Configuration '{config_name}' is disabled.")
-
-        # 5. Parse JSON from request body
+        # 3. Parse JSON from request body
         try:
             raw_data = frappe.request.data
             if not raw_data:
@@ -95,19 +68,21 @@ def handle_webhook():
         except (json.JSONDecodeError, UnicodeDecodeError) as e:
             frappe.throw(f"Invalid JSON payload: {e}")
 
-        # 5.1 Handle Tilda's test=test ping (Tilda может не слать test ping для JSON, но оставим на всякий случай)
+        # 3.1 Handle Tilda's test=test ping (Tilda может не слать test ping для JSON, но оставим на всякий случай)
         if len(decoded_data) == 1 and decoded_data.get("test") == "test":
             frappe.local.response["http_status_code"] = 200
             return {"status": "success", "message": "Webhook test connection successful."}
 
-        # 6. Optional: Create Initial Log Entry
+        # 4. Optional: Create Initial Log Entry
         if config.enable_logging:
             try:
-                log_doc = frappe.new_doc("Tilda Webhook Log")
-                log_doc.webhook_configuration = config.name
-                log_doc.received_at = received_at
-                log_doc.status = "Processing"
-                log_doc.payload = json.dumps(decoded_data, indent=2, ensure_ascii=False)
+                log_doc = frappe.get_doc({
+                    "doctype": "Tilda Webhook Log",
+                    "webhook_configuration": config.name,
+                    "received_at": received_at,
+                    "status": "Processing",
+                    "payload": json.dumps(decoded_data, indent=2, ensure_ascii=False)
+                })
                 log_doc.insert(ignore_permissions=True)
                 log_name = log_doc.name
                 frappe.db.commit()
@@ -116,7 +91,7 @@ def handle_webhook():
                 frappe.log_error(f"Failed to create initial webhook log for {config.name}: {e}", "Tilda Webhook Logging Error")
                 log_name = None # Ensure we don't try to update a non-existent log
 
-        # 7. Enqueue Background Job
+        # 5. Enqueue Background Job
         frappe.enqueue(
             "tilda.frappe_tilda.webhook_handler.process_webhook_data",
             queue="short", # Or 'default' / 'long' depending on expected processing time
@@ -126,13 +101,13 @@ def handle_webhook():
             log_name=log_name # Pass log name if created
         )
 
-        # 8. Return Success Response to Tilda
+        # 6. Return Success Response to Tilda
         frappe.local.response["http_status_code"] = 200
         # Tilda expects 'ok' or just 200 status based on some examples, let's return a simple JSON
         return {"status": "success", "message": "Webhook data received and queued for processing."}
 
     except frappe.ValidationError as e:
-        frappe.log_error(message=f"Webhook Validation Error ({config_name}): {e}", title="Tilda Webhook Error")
+        frappe.log_error(message=f"Webhook Validation Error ({config.name if config else 'UNKNOWN_CONFIG'}): {e}", title="Tilda Webhook Error")
         frappe.local.response["http_status_code"] = getattr(e, "http_status_code", 400)
         return {"status": "error", "message": str(e)}
     except Exception as e:
@@ -140,7 +115,7 @@ def handle_webhook():
         # --- Add diagnostic logging before logging the error ---
         # print(f"--- Tilda Webhook: CAUGHT UNHANDLED EXCEPTION for config '{config_name_for_log}': {e} ---")
         try:
-            frappe.logger().error(f"--- Tilda Webhook: CAUGHT UNHANDLED EXCEPTION for config '{config_name_for_log}' via logger: {e} ---")
+            frappe.logger().error(f"--- Tilda Webhook: CAUGHT UNHANDLED EXCEPTION for config '{config.name if config else 'UNKNOWN_CONFIG'}' via logger: {e} ---")
         except Exception as log_err_err:
             # print(f"--- Tilda Webhook: ERROR using logger in exception handler: {log_err_err} ---")
             pass # Avoid stopping execution if logger fails in handler

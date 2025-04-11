@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Frappe Tilda VERSION\n"
 "Report-Msgid-Bugs-To: dev@frappecrm.ru\n"
-"POT-Creation-Date: 2025-04-11 18:55+0000\n"
-"PO-Revision-Date: 2025-04-11 23:00+0400\n"
+"POT-Creation-Date: 2025-04-11 20:56+0000\n"
+"PO-Revision-Date: 2025-04-12 00:57+0400\n"
 "Last-Translator: AlexKuzin <dev@olimpicfresh.ru>\n"
 "Language-Team: dev@frappecrm.ru\n"
 "Language: ru\n"
@@ -129,6 +129,10 @@ msgstr "Введите значение по умолчанию в виде те
 msgid "Error"
 msgstr "Ошибка"
 
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.py:152
+msgid "Error processing row: {0}"
+msgstr "Ошибка при обработке строки: {0}"
+
 #. Option for the 'Status' (Select) field in DocType 'Tilda CSV Importer'
 #: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.json
 msgid "Failed"
@@ -212,6 +216,10 @@ msgstr "В ожидании"
 msgid "Please save the document before regenerating the key."
 msgstr "Пожалуйста, сохраните документ, прежде чем генерировать ключ."
 
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.py:142
+msgid "Processed successfully."
+msgstr "Обработка прошла успешно."
+
 #. Option for the 'Status' (Select) field in DocType 'Tilda CSV Importer'
 #. Option for the 'Status' (Select) field in DocType 'Tilda Webhook Log'
 #: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.json
@@ -245,7 +253,7 @@ msgstr "Регенерировать ключ"
 msgid "Regenerating the key will require updating the Webhook URL in Tilda. Do you want to proceed?"
 msgstr "После регенерации ключа потребуется обновить URL Webhook в Tilda. Готовы продолжить?"
 
-#. Label of the secret_key (Password) field in DocType 'Tilda Webhook
+#. Label of the secret_key (Data) field in DocType 'Tilda Webhook
 #. Configuration'
 #: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
 msgid "Secret Key"
@@ -348,6 +356,14 @@ msgstr "Соответствующее имя поля в выбранном ц�
 msgid "The exact name of the field variable sent by Tilda (case-sensitive, e.g., 'Name', 'Email', 'phone', 'custom_field')."
 msgstr "Точное имя переменной поля, отправленное Tilda (с учетом регистра, например, 'Name', 'Email', 'phone', 'custom_field')."
 
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.py:188
+msgid "Tilda CSV Import {0} Job Error"
+msgstr "Tilda CSV Import {0} Ошибка задания"
+
+#: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.py:165
+msgid "Tilda CSV Import {0} Log Append Error"
+msgstr "Tilda CSV Import {0} Ошибка добавления журнала"
+
 #. Name of a DocType
 #: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.json
 msgid "Tilda CSV Importer"
@@ -400,7 +416,7 @@ msgstr "Журнал вебхуков Tilda"
 msgid "Time taken by the background job to process the webhook."
 msgstr "Время, необходимое фоновому заданию для обработки вебхука."
 
-#. Description of the 'Secret Key' (Password) field in DocType 'Tilda Webhook
+#. Description of the 'Secret Key' (Data) field in DocType 'Tilda Webhook
 #. Configuration'
 #: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
 msgid "Unique key to authenticate incoming requests. This is part of the webhook URL."

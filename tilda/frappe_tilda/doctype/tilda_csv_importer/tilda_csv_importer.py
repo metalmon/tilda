@@ -116,7 +116,6 @@ def process_csv_import(importer_name: str, webhook_config_name: str, csv_file_do
                 # --- ADD LOGGING HERE ---
                 log_csv_row = f"[Tilda CSV Import {importer_name}] Processing Row {row_number}. Data from CSV: {row_dict}"
                 frappe.logger().info(log_csv_row)
-                print(log_csv_row) # Also print for visibility
                 # ------------------------
 
                 # Prepare payload (keys should match CSV headers)
@@ -140,7 +139,7 @@ def process_csv_import(importer_name: str, webhook_config_name: str, csv_file_do
                 created_doc_name = frappe.local.response # frappe.call puts result in response
 
                 log_entry["status"] = "Success"
-                log_entry["message"] = f"Processed successfully."
+                log_entry["message"] = frappe._("Processed successfully.")
                 # Set the dynamic link field if name is returned
                 if created_doc_name and isinstance(created_doc_name, str):
                     log_entry["created_document"] = created_doc_name
@@ -150,7 +149,7 @@ def process_csv_import(importer_name: str, webhook_config_name: str, csv_file_do
                 error_msg = traceback.format_exc()
                 frappe.log_error(error_msg, f"Tilda CSV Import {importer_name} Row {row_number} Error")
                 log_entry["status"] = "Error"
-                log_entry["message"] = f"Error processing row: {str(e)}"
+                log_entry["message"] = frappe._("Error processing row: {0}").format(str(e))
                 error_count += 1
             finally:
                 # --- Correct way to add child table row --- 
@@ -163,7 +162,7 @@ def process_csv_import(importer_name: str, webhook_config_name: str, csv_file_do
                     # If appending the dict fails (less likely)
                     err_msg_log_append = f"Failed to append log entry dict for row {row_number}: {traceback.format_exc()}"
                     print(f"--- [Tilda Process {webhook_config_name}] Row {row_number}: ERROR appending log entry dict: {err_msg_log_append} ---")
-                    frappe.log_error(err_msg_log_append, f"Tilda CSV Import {importer_name} Log Append Error")
+                    frappe.log_error(err_msg_log_append, frappe._("Tilda CSV Import {0} Log Append Error").format(importer_name))
                     # Optionally manually update status if append fails?
                     # importer_doc.status = "Failed"
                 # --------------------------------------------
@@ -186,7 +185,7 @@ def process_csv_import(importer_name: str, webhook_config_name: str, csv_file_do
     except Exception as job_err:
         # Handle errors during file reading, setup, or final save
         error_msg = traceback.format_exc()
-        frappe.log_error(error_msg, f"Tilda CSV Import {importer_name} Job Error")
+        frappe.log_error(error_msg, frappe._("Tilda CSV Import {0} Job Error").format(importer_name))
         try:
             # Attempt to save the failure status and any logs collected so far
             importer_doc.status = "Failed"
