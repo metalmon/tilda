@@ -1,0 +1,90 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-04-11 13:00:00",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "webhook_configuration",
+  "csv_file",
+  "column_break_1",
+  "status",
+  "csv_delimiter",
+  "section_break_log",
+  "import_log"
+ ],
+ "fields": [
+  {
+   "description": "Select the webhook configuration whose mappings and defaults should be used for this import.",
+   "fieldname": "webhook_configuration",
+   "fieldtype": "Link",
+   "label": "Webhook Configuration to Use",
+   "options": "Tilda Webhook Configuration",
+   "reqd": 1
+  },
+  {
+   "description": "Upload the CSV file exported from Tilda.",
+   "fieldname": "csv_file",
+   "fieldtype": "Attach",
+   "label": "Tilda Export CSV File",
+   "reqd": 1
+  },
+  {
+   "default": ";",
+   "description": "The character used to separate fields in the CSV file (e.g., ',' or ';').",
+   "fieldname": "csv_delimiter",
+   "fieldtype": "Data",
+   "label": "CSV Delimiter"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Pending",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Pending\nProcessing\nCompleted\nFailed",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_log",
+   "fieldtype": "Section Break",
+   "label": "Import Log"
+  },
+  {
+   "fieldname": "import_log",
+   "fieldtype": "Table",
+   "label": "Import Log",
+   "options": "Tilda Import Log Entry"
+  }
+ ],
+ "links": [],
+ "modified": "2025-04-11 21:19:34.915357",
+ "modified_by": "Administrator",
+ "module": "Frappe Tilda",
+ "name": "Tilda CSV Importer",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

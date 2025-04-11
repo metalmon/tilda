@@ -8,6 +8,7 @@ from frappe.model.document import Document
 from urllib.parse import unquote_plus, parse_qs, unquote, urljoin
 import time
 import traceback
+from tilda.frappe_tilda.utils import apply_mappings_and_defaults
 
 # --- API Endpoint ---
 
@@ -225,160 +226,45 @@ def process_webhook_data(config_name: str, payload: dict, log_name: str = None):
         # Get target doctype metadata
         target_meta = frappe.get_meta(target_doctype)
 
-        # --- Helper Function for Data Conversion ---
-        def convert_value(value, field_meta):
-            if value is None or value == '':
-                return None
-            try:
-                if field_meta.fieldtype in ["Int", "Check"]:
-                    return cint(value)
-                elif field_meta.fieldtype in ["Float", "Currency", "Percent"]:
-                    return flt(value)
-                elif field_meta.fieldtype in ["Date"]:
-                    try: return get_datetime(value).date()
-                    except Exception: return None
-                elif field_meta.fieldtype in ["Datetime"]:
-                    try: return get_datetime(value)
-                    except Exception: return None
-                else: # Data, Text, Link, etc.
-                    return value
-            except Exception as conversion_error:
-                frappe.log_error(f"Error converting value '{value}' for field '{field_meta.fieldname}' (Type: {field_meta.fieldtype}): {conversion_error}", "Tilda Webhook Data Conversion Error")
-                return None # Return None if conversion fails
+        # --- Helper Function for Data Conversion --- REMOVED in favor of moving to utils or being handled within apply_mappings
+        # [ ... removed convert_value function ... ]
         # -------------------------------------------
 
-        # Parse cookies if present
-        cookie_data = {}
-        if "COOKIES" in payload:
-            cookie_data = parse_tilda_cookies(payload["COOKIES"])
-            frappe.logger().info(f"[Tilda Process {config_name}] Parsed Cookies: {cookie_data}")
-            processed_tilda_fields.add("COOKIES") # Mark the key itself as processed
+        # --- Apply Mappings and Defaults using the utility function ---
+        cookies_string = payload.pop('COOKIES', '') # Extract cookies string, remove from main payload
+        # Ensure payload is a dictionary if it came in as JSON string
+        # Note: The handle_webhook function should already provide payload as dict
+        payload_dict = payload if isinstance(payload, dict) else {}
 
-        # --- Process Mappings (Single Loop) ---
-        frappe.logger().info(f"[Tilda Process {config_name}] Processing field mappings...")
-        if mappings:
-            for mapping in mappings:
-                possible_tilda_fields = [f.strip() for f in mapping.tilda_field_name.split(',')]
-                frappe_field = mapping.frappe_field_name
-                # Define behavior ONCE for this mapping rule
-                behavior = mapping.get("multi_field_behavior", "Overwrite")
-                field_meta = target_meta.get_field(frappe_field)
+        new_doc_data = apply_mappings_and_defaults(
+            target_doctype=target_doctype,
+            payload=payload_dict,
+            cookies_string=cookies_string, # Pass raw string
+            field_mappings=config.get("field_mappings", []),
+            default_values=config.get("default_values", [])
+        )
 
-                if not field_meta:
-                    frappe.log_error(f"Mapped Frappe field '{frappe_field}' (Rule: '{mapping.tilda_field_name}') not found in Doctype '{target_doctype}'. Skipping rule.", "Tilda Webhook Configuration Error")
-                    continue # Skip this mapping rule
+        # --- Remove the old mapping/defaults logic ---
+        # [ The large block of code handling cookie parsing, mappings (Overwrite/Concatenate), and defaults is replaced by the call above ]
+        # --- End Removal ---
 
-                values_to_concat = []
-                value_found_for_overwrite = False # Flag for Overwrite mode
+        # --- Existing logging and validation logic ---
+        # Log the final data dictionary just before attempting to insert
+        # Use INFO level, but keep print for debugging if needed
+        log_msg_data = f"[Tilda Process {config_name}] Final data after apply_mappings_and_defaults: {new_doc_data}"
+        frappe.logger().info(log_msg_data)
+        # print(log_msg_data)
 
-                # Check all potential fields for this rule from Cookies and Payload
-                for potential_field in possible_tilda_fields:
-                    if potential_field in processed_tilda_fields:
-                        continue # Already processed by a previous rule (unlikely but possible)
-
-                    found_value = None
-                    source = None
-
-                    # 1. Check Cookies first
-                    if potential_field in cookie_data:
-                        cookie_value = cookie_data[potential_field]
-                        if cookie_value is not None and cookie_value != '':
-                            found_value = cookie_value
-                            source = "Cookie"
-                            processed_tilda_fields.add(potential_field) # Mark as processed
-
-                    # 2. Check Payload if not found in cookies OR if concatenating
-                    if found_value is None or behavior == "Concatenate":
-                         if potential_field in payload:
-                            payload_value = payload[potential_field]
-                            if payload_value is not None and payload_value != '':
-                                # Only use payload if cookie wasn't found or we are concatenating
-                                if source != "Cookie" or behavior == "Concatenate":
-                                     found_value = payload_value
-                                     source = "Payload"
-                                     processed_tilda_fields.add(potential_field) # Mark as processed
-                            elif source != "Cookie": # Mark empty payload field as processed if no cookie found
-                                processed_tilda_fields.add(potential_field)
-
-                    # --- Apply the found value based on behavior ---
-                    if found_value is not None and source is not None:
-                        if behavior == "Overwrite":
-                            if not value_found_for_overwrite:
-                                if frappe_field not in new_doc_data:
-                                    converted = convert_value(found_value, field_meta)
-                                    if converted is not None or (found_value is None or found_value == ''):
-                                        new_doc_data[frappe_field] = converted
-                                        frappe.logger().info(f"[Tilda Process {config_name}] Mapped {source} '{potential_field}' -> '{frappe_field}' = {converted} (Rule: '{mapping.tilda_field_name}', Behavior: Overwrite)")
-                                        value_found_for_overwrite = True # Set flag
-                                else:
-                                    frappe.logger().warning(f"[Tilda Process {config_name}] Frappe field '{frappe_field}' already set. Skipping {source} '{potential_field}' for rule '{mapping.tilda_field_name}' (Behavior: Overwrite).")
-                                    value_found_for_overwrite = True # Set flag
-                            # If value_found_for_overwrite is True, ignore subsequent values for this rule
-
-                        elif behavior == "Concatenate":
-                             # Check if target field is text-based
-                            if field_meta.fieldtype in ["Data", "Text", "Small Text", "Text Editor", "Long Text", "Code"]:
-                                values_to_concat.append(str(found_value))
-                                frappe.logger().info(f"[Tilda Process {config_name}] Added value from {source} '{potential_field}' for concatenation to '{frappe_field}' (Rule: '{mapping.tilda_field_name}')")
-                            else:
-                                # Concatenation not suitable, apply only the FIRST value found using Overwrite logic
-                                if not value_found_for_overwrite:
-                                    frappe.logger().warning(f"[Tilda Process {config_name}] Concatenation not supported for field '{frappe_field}' (Type: {field_meta.fieldtype}). Applying first value from {source} '{potential_field}' using Overwrite logic.")
-                                    if frappe_field not in new_doc_data:
-                                        converted = convert_value(found_value, field_meta)
-                                        if converted is not None or (found_value is None or found_value == ''):
-                                            new_doc_data[frappe_field] = converted
-                                            frappe.logger().info(f"[Tilda Process {config_name}] Mapped {source} '{potential_field}' -> '{frappe_field}' = {converted} (Rule: '{mapping.tilda_field_name}', Behavior: Concatenate Fallback)")
-                                            value_found_for_overwrite = True
-                                    else:
-                                         frappe.logger().warning(f"[Tilda Process {config_name}] Frappe field '{frappe_field}' already set. Skipping {source} '{potential_field}' for rule '{mapping.tilda_field_name}' (Behavior: Concatenate Fallback).")
-                                         value_found_for_overwrite = True
-                                # Ignore subsequent values for this rule if falling back
-
-                    # If Overwrite mode and we found a value, stop checking other potential_fields for this rule
-                    if behavior == "Overwrite" and value_found_for_overwrite:
-                        break
-
-                # --- Apply Concatenated Value (if applicable) after checking all potential fields ---
-                if behavior == "Concatenate" and values_to_concat:
-                     if field_meta.fieldtype in ["Data", "Text", "Small Text", "Text Editor", "Long Text", "Code"]:
-                        # Get the delimiter, default to space if empty or not present
-                        delimiter = mapping.get("concatenation_delimiter")
-                        if delimiter is None or delimiter == "":
-                            delimiter = " " # Default delimiter
-
-                        concatenated_value = delimiter.join(values_to_concat)
-                        if frappe_field not in new_doc_data: # Check again
-                            new_doc_data[frappe_field] = concatenated_value
-                            # Log with the used delimiter for clarity
-                            frappe.logger().info(f"[Tilda Process {config_name}] Applied Concatenated value to '{frappe_field}' = '{concatenated_value}' (Delimiter: '{delimiter}', Rule: '{mapping.tilda_field_name}')")
-                        else:
-                             frappe.logger().warning(f"[Tilda Process {config_name}] Frappe field '{frappe_field}' was already set (by fallback?). Skipping concatenated value for rule '{mapping.tilda_field_name}'.")
-
-        # 3. Apply default values
-        frappe.logger().info(f"[Tilda Process {config_name}] Applying default values...")
-        if default_values:
-            for default_entry in default_values:
-                frappe_field = default_entry.frappe_field_name
-                default_text_value = default_entry.default_value
-                overwrite = default_entry.overwrite_if_exists
-
-                if overwrite or frappe_field not in new_doc_data:
-                    field_meta = target_meta.get_field(frappe_field)
-                    if field_meta:
-                        converted = convert_value(default_text_value, field_meta)
-                        if converted is not None or (default_text_value is None or default_text_value == ''):
-                            new_doc_data[frappe_field] = converted
-                            frappe.logger().info(f"[Tilda Process {config_name}] Applied Default: '{frappe_field}' = {converted}")
-                    else:
-                        frappe.log_error(f"Default value Frappe field '{frappe_field}' not found in Doctype '{target_doctype}'.", "Tilda Webhook Configuration Error")
+        # --- Remove the incorrect CRM Lead specific validation block ---
+        # [ The if target_doctype == "CRM Lead": ... block is removed here ]
+        # --- End Removal ---
 
         # 4. Create the new Frappe document
-        # Log the final data dictionary just before attempting to insert
-        # Use ERROR level to ensure it gets logged
-        log_msg_data = f"[Tilda Process {config_name}] Final data before get_doc: {new_doc_data}"
-        frappe.logger().error(log_msg_data)
-        print(log_msg_data) # Add print statement
+        # Log data AGAIN right before get_doc, this time with ERROR level for visibility
+        log_msg_final_data = f"[Tilda Process {config_name}] Data just before get_doc: {new_doc_data}"
+        frappe.logger().error(log_msg_final_data)
+        print(log_msg_final_data) # Add print statement
+
         if len(new_doc_data) > 1: # Ensure we have more than just {"doctype": ...}
             new_doc = frappe.get_doc(new_doc_data)
             # Add log after get_doc to confirm success
@@ -406,6 +292,7 @@ def process_webhook_data(config_name: str, payload: dict, log_name: str = None):
                 log_doc.save(ignore_permissions=True)
                 frappe.db.commit()
             frappe.logger().info(f"[Tilda Process {config_name}] {success_message}")
+            return new_doc.name # Return the name of the created document
         else:
             no_data_message = "No data mapped or defaulted to create the document."
             frappe.logger().warning(f"[Tilda Process {config_name}] {no_data_message}") # Log as warning

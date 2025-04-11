@@ -1,63 +1,64 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2024-04-09 16:20:00.000000",
+ "creation": "2024-04-09 16:20:00",
  "doctype": "DocType",
+ "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "tilda_field_name",
-  "frappe_field_name"
+  "frappe_field_name",
+  "multi_field_behavior",
+  "concatenation_delimiter"
  ],
  "fields": [
   {
+   "description": "The exact name of the field variable sent by Tilda (case-sensitive, e.g., 'Name', 'Email', 'phone', 'custom_field').",
    "fieldname": "tilda_field_name",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Tilda Field Name",
-   "reqd": 1,
-   "description": "The exact name of the field variable sent by Tilda (case-sensitive, e.g., 'Name', 'Email', 'phone', 'custom_field')."
+   "reqd": 1
   },
   {
+   "description": "The corresponding fieldname in the selected Target Doctype.",
    "fieldname": "frappe_field_name",
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Frappe Field Name",
-   "reqd": 1,
-   "description": "The corresponding fieldname in the selected Target Doctype.",
-   "options": ""
+   "reqd": 1
   },
   {
+   "default": "Overwrite",
+   "depends_on": "eval:doc.tilda_field_name && doc.tilda_field_name.includes(',')",
+   "description": "Choose how to handle multiple Tilda fields (comma-separated) mapped to one Frappe field. 'Overwrite': Use the first non-empty value found. 'Concatenate': Join all non-empty values with a space (best for text fields).",
    "fieldname": "multi_field_behavior",
    "fieldtype": "Select",
    "label": "Behavior for Multiple Tilda Fields",
-   "options": "Overwrite\nConcatenate",
-   "default": "Overwrite",
-   "description": "Choose how to handle multiple Tilda fields (comma-separated) mapped to one Frappe field. 'Overwrite': Use the first non-empty value found. 'Concatenate': Join all non-empty values with a space (best for text fields).",
-   "depends_on": "eval:doc.tilda_field_name && doc.tilda_field_name.includes(',')",
    "mandatory_depends_on": "eval:doc.tilda_field_name && doc.tilda_field_name.includes(',')",
-   "in_list_view": 0
+   "options": "Overwrite\nConcatenate"
   },
   {
+   "default": " ",
+   "depends_on": "eval:doc.multi_field_behavior == 'Concatenate'",
+   "description": "The character(s) used to join values when 'Concatenate' behavior is selected (e.g., space, comma, | ). Defaults to a single space.",
    "fieldname": "concatenation_delimiter",
    "fieldtype": "Data",
    "label": "Concatenation Delimiter",
-   "default": " ",
-   "description": "The character(s) used to join values when 'Concatenate' behavior is selected (e.g., space, comma, | ). Defaults to a single space.",
-   "depends_on": "eval:doc.multi_field_behavior == 'Concatenate'",
-   "mandatory_depends_on": "eval:doc.multi_field_behavior == 'Concatenate'",
-   "in_list_view": 0
+   "mandatory_depends_on": "eval:doc.multi_field_behavior == 'Concatenate'"
   }
  ],
- "index_web_pages_for_search": 0,
  "istable": 1,
  "links": [],
- "modified": "2024-04-09 16:25:00.000000",
+ "modified": "2025-04-11 20:18:52.794745",
  "modified_by": "Administrator",
  "module": "Frappe Tilda",
  "name": "Tilda Field Mapping",
  "owner": "Administrator",
  "permissions": [],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
-} 
+}

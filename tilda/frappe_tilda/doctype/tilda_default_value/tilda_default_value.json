@@ -1,8 +1,9 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2025-04-10 01:30:00.000000",
+ "creation": "2025-04-10 01:30:00",
  "doctype": "DocType",
+ "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "frappe_field_name",
@@ -11,39 +12,39 @@
  ],
  "fields": [
   {
+   "description": "Select the field in the Target Doctype to set a default value for.",
    "fieldname": "frappe_field_name",
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Frappe Field Name",
-   "reqd": 1,
-   "description": "Select the field in the Target Doctype to set a default value for.",
-   "options": ""
+   "reqd": 1
   },
   {
+   "description": "Enter the default value as text. It will be converted to the target field's type if possible (e.g., '1' for Checkbox, '2024-12-31' for Date).",
    "fieldname": "default_value",
    "fieldtype": "Small Text",
    "in_list_view": 1,
-   "label": "Default Value",
-   "description": "Enter the default value as text. It will be converted to the target field's type if possible (e.g., '1' for Checkbox, '2024-12-31' for Date)."
+   "label": "Default Value"
   },
   {
-    "fieldname": "overwrite_if_exists",
-    "fieldtype": "Check",
-    "label": "Overwrite if value exists from Tilda",
-    "default": "0",
-    "description": "If checked, this default value will replace any value mapped from the Tilda form for the same field."
+   "fieldname": "overwrite_mapped",
+   "fieldtype": "Check",
+   "label": "Overwrite if value exists from Tilda",
+   "description": "If checked, this default value will replace any value mapped from the Tilda payload/cookies for the same field.",
+   "default": "0"
   }
  ],
- "index_web_pages_for_search": 0,
  "istable": 1,
  "links": [],
- "modified": "2025-04-10 01:35:00.000000",
+ "modified": "2025-04-11 20:18:42.720779",
  "modified_by": "Administrator",
  "module": "Frappe Tilda",
  "name": "Tilda Default Value",
  "owner": "Administrator",
  "permissions": [],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "track_changes": 1
-} 
+}
