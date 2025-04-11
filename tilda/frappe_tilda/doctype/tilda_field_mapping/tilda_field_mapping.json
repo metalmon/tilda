@@ -25,6 +25,27 @@
    "reqd": 1,
    "description": "The corresponding fieldname in the selected Target Doctype.",
    "options": ""
+  },
+  {
+   "fieldname": "multi_field_behavior",
+   "fieldtype": "Select",
+   "label": "Behavior for Multiple Tilda Fields",
+   "options": "Overwrite\nConcatenate",
+   "default": "Overwrite",
+   "description": "Choose how to handle multiple Tilda fields (comma-separated) mapped to one Frappe field. 'Overwrite': Use the first non-empty value found. 'Concatenate': Join all non-empty values with a space (best for text fields).",
+   "depends_on": "eval:doc.tilda_field_name && doc.tilda_field_name.includes(',')",
+   "mandatory_depends_on": "eval:doc.tilda_field_name && doc.tilda_field_name.includes(',')",
+   "in_list_view": 0
+  },
+  {
+   "fieldname": "concatenation_delimiter",
+   "fieldtype": "Data",
+   "label": "Concatenation Delimiter",
+   "default": " ",
+   "description": "The character(s) used to join values when 'Concatenate' behavior is selected (e.g., space, comma, | ). Defaults to a single space.",
+   "depends_on": "eval:doc.multi_field_behavior == 'Concatenate'",
+   "mandatory_depends_on": "eval:doc.multi_field_behavior == 'Concatenate'",
+   "in_list_view": 0
   }
  ],
  "index_web_pages_for_search": 0,
