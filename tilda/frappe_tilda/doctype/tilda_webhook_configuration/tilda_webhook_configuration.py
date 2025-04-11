@@ -4,7 +4,7 @@
 import frappe
 from frappe.model.document import Document
 import secrets
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse, urlunparse
 
 class TildaWebhookConfiguration(Document):
 
@@ -51,13 +51,24 @@ class TildaWebhookConfiguration(Document):
             try:
                 doc_name = self.name
                 site_url = frappe.utils.get_site_url(frappe.local.site)
+
+                # Ensure HTTPS scheme
+                parsed_site_url = urlparse(site_url)
+                if parsed_site_url.scheme == 'http':
+                    # Replace http with https
+                    https_site_url = urlunparse(parsed_site_url._replace(scheme='https'))
+                    frappe.logger().debug(f"[Tilda Webhook URL] Original site URL '{site_url}' changed to '{https_site_url}'")
+                else:
+                    https_site_url = site_url
+
                 # Используем get_password для получения реального ключа
                 real_secret_key = self.get_password('secret_key')
                 if not real_secret_key:
                      return "Error: Secret key not found or inaccessible."
 
-                api_path = f"/api/method/tilda.frappe_tilda.webhook_handler.handle_webhook/{doc_name}?key={real_secret_key}"
-                full_url = urljoin(site_url, api_path)
+                api_path = f"/api/method/tilda.frappe_tilda.webhook_handler.handle_webhook?config={doc_name}&key={real_secret_key}"
+                # Use the potentially modified URL with https scheme
+                full_url = urljoin(https_site_url, api_path)
                 return full_url
             except Exception as e:
                 frappe.log_error(f"Error generating webhook URL string for {self.name}: {e}", "Webhook URL Generation Error")
