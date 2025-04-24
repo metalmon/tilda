@@ -9,6 +9,7 @@
   "section_break_1",
   "enabled",
   "webhook_name",
+  "webhook_user",
   "column_break_1",
   "enable_logging",
   "target_doctype",
@@ -71,7 +72,7 @@
    "fieldname": "tilda_instructions_html",
    "fieldtype": "HTML",
    "label": "Tilda Setup Instructions",
-   "options": "<div><h4>Tilda Webhook Setup:</h4><ol><li>Go to Site Settings → Forms → Webhook.</li><li>In the \"Webhook URL\" field, paste the URL from the field above.</li><li><b>Important:</b> Enable the option <kbd>Send data as application/json</kbd>. Our handler expects this format.</li><li>Enable the option <kbd>Send Cookies</kbd> if you want to automatically receive UTM tags (provided that the target Frappe doctype has fields like <code>utm_source</code>, <code>utm_medium</code>, etc.).</li><li>Save the webhook settings in Tilda.</li></ol><p>For more details, see the <a href=\"https://help.tilda.cc/forms/webhook\" target=\"_blank\">Tilda Webhook documentation</a>.</p></div>",
+   "options": "<div><h4>Tilda Webhook Setup:</h4><ol><li>Go to Site Settings \u2192 Forms \u2192 Webhook.</li><li>In the \"Webhook URL\" field, paste the URL from the field above.</li><li><b>Important:</b> Enable the option <kbd>Send data as application/json</kbd>. Our handler expects this format.</li><li>Enable the option <kbd>Send Cookies</kbd> if you want to automatically receive UTM tags (provided that the target Frappe doctype has fields like <code>utm_source</code>, <code>utm_medium</code>, etc.).</li><li>Save the webhook settings in Tilda.</li></ol><p>For more details, see the <a href=\"https://help.tilda.cc/forms/webhook\" target=\"_blank\">Tilda Webhook documentation</a>.</p></div>",
    "read_only": 1
   },
   {
@@ -119,10 +120,19 @@
   {
    "fieldname": "section_break_hpph",
    "fieldtype": "Section Break"
+  },
+  {
+   "default": "Guest",
+   "description": "Select the user on whose behalf the documents will be created.",
+   "fieldname": "webhook_user",
+   "fieldtype": "Link",
+   "label": "Webhook User",
+   "options": "User",
+   "reqd": 1
   }
  ],
  "links": [],
- "modified": "2025-04-10 21:16:48.323115",
+ "modified": "2025-04-24 22:26:36.369160",
  "modified_by": "Administrator",
  "module": "Frappe Tilda",
  "name": "Tilda Webhook Configuration",
