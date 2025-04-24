@@ -3,7 +3,7 @@
 
 import frappe
 import secrets
-from urllib.parse import urljoin
+from urllib.parse import urlparse, urlunparse
 import traceback # Import traceback
 
 @frappe.whitelist()
@@ -41,17 +41,30 @@ def regenerate_tilda_key(docname: str):
         # 1. Get site URL
         site_url = frappe.utils.get_site_url(frappe.local.site)
         
-        # 2. Ensure HTTPS scheme
-        if site_url.startswith('http:'):
-            site_url = 'https:' + site_url[5:]
+        # 2. Parse the URL and properly handle scheme and port
+        parsed_url = urlparse(site_url)
+        
+        # Ensure HTTPS scheme
+        if parsed_url.scheme == 'http':
+            parsed_url = parsed_url._replace(scheme='https')
+        
+        # Fix the ":None" problem by rebuilding the netloc without the port if it's None
+        if ":None" in parsed_url.netloc:
+            clean_netloc = parsed_url.netloc.split(":")[0]  # Get just the hostname
+            parsed_url = parsed_url._replace(netloc=clean_netloc)
+        
+        # Rebuild the clean URL
+        clean_site_url = urlunparse(parsed_url)
+        
+        # Remove trailing slash if present
+        if clean_site_url.endswith('/'):
+            clean_site_url = clean_site_url[:-1]
             
         # 3. Create the API path with the new key
         api_path = f"/api/method/tilda.frappe_tilda.webhook_handler.handle_webhook?key={new_key}"
         
         # 4. Join site URL and API path
-        if site_url.endswith('/'):
-            site_url = site_url[:-1]  # Remove trailing slash if present
-        webhook_url = site_url + api_path
+        webhook_url = clean_site_url + api_path
         
         # 5. Update the URL field in the document without triggering modified
         frappe.db.set_value("Tilda Webhook Configuration", docname, "webhook_url_html", webhook_url, update_modified=False)

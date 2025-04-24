@@ -59,6 +59,13 @@ class TildaWebhookConfiguration(Document):
                     frappe.logger().debug(f"[Tilda Webhook URL] Original site URL '{site_url}' changed to '{https_site_url}'")
                 else:
                     https_site_url = site_url
+                
+                # Properly handle port=None using urlparse
+                parsed_url = urlparse(https_site_url)
+                # If netloc contains ":None", replace it with just the hostname
+                if ":None" in parsed_url.netloc:
+                    clean_netloc = parsed_url.netloc.split(":")[0]  # Keep only hostname
+                    https_site_url = urlunparse(parsed_url._replace(netloc=clean_netloc))
 
                 real_secret_key = self.secret_key
                 if not real_secret_key:
