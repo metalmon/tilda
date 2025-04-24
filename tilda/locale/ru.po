@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Frappe Tilda VERSION\n"
 "Report-Msgid-Bugs-To: dev@frappecrm.ru\n"
-"POT-Creation-Date: 2025-04-11 20:56+0000\n"
-"PO-Revision-Date: 2025-04-12 00:57+0400\n"
+"POT-Creation-Date: 2025-04-24 18:46+0000\n"
+"PO-Revision-Date: 2025-04-24 22:47+0400\n"
 "Last-Translator: AlexKuzin <dev@olimpicfresh.ru>\n"
 "Language-Team: dev@frappecrm.ru\n"
 "Language: ru\n"
@@ -271,6 +271,12 @@ msgstr "Выберите доктайп Frappe для создания (напр
 msgid "Select the field in the Target Doctype to set a default value for."
 msgstr "Выберите поле в доктайпе, для которого нужно установить значение по умолчанию."
 
+#. Description of the 'Webhook User' (Link) field in DocType 'Tilda Webhook
+#. Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Select the user on whose behalf the documents will be created."
+msgstr "Выберите пользователя, от имени которого будут созданы документы."
+
 #. Description of the 'Webhook Configuration to Use' (Link) field in DocType
 #. 'Tilda CSV Importer'
 #: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.json
@@ -306,6 +312,10 @@ msgstr "Статус"
 #: tilda/frappe_tilda/doctype/tilda_webhook_log/tilda_webhook_log.json
 msgid "Success"
 msgstr "Успешно"
+
+#: tilda/frappe_tilda/webhook_handler.py:260
+msgid "Successfully created {0} {1}."
+msgstr "Успешно создано {0} {1}."
 
 #. Name of a role
 #: tilda/frappe_tilda/doctype/tilda_csv_importer/tilda_csv_importer.json
@@ -457,3 +467,13 @@ msgstr "Название вебхука"
 #: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
 msgid "Webhook URL"
 msgstr "URL веб-хука"
+
+#. Label of the webhook_user (Link) field in DocType 'Tilda Webhook
+#. Configuration'
+#: tilda/frappe_tilda/doctype/tilda_webhook_configuration/tilda_webhook_configuration.json
+msgid "Webhook User"
+msgstr "Пользователь вебхука"
+
+#: tilda/frappe_tilda/webhook_handler.py:247
+msgid "[Tilda Process {0}] Successfully got doc object for {1}"
+msgstr "[Tilda Process {0}] Успешно получен объект doc для {1}"
